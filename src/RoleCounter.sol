@@ -17,15 +17,11 @@ contract RoleCounter is AccessControl {
         count += 1;
     }
 
-    function addOperator(
-        address account
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addOperator(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _grantRole(OPERATOR_ROLE, account);
     }
 
-    function removeOperator(
-        address account
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function removeOperator(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _revokeRole(OPERATOR_ROLE, account);
     }
 

@@ -59,9 +59,7 @@ contract RoleCounterTest is Test {
     function test_NonOperatorCannotIncrementWithExactError() public {
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                stranger,
-                counter.OPERATOR_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, counter.OPERATOR_ROLE()
             )
         );
 
@@ -75,9 +73,7 @@ contract RoleCounterTest is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                operator,
-                counter.DEFAULT_ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, operator, counter.DEFAULT_ADMIN_ROLE()
             )
         );
 

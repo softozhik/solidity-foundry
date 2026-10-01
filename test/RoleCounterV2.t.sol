@@ -25,10 +25,7 @@ contract RoleCounterV2Test is Test {
 
         assertTrue(counter.hasRole(counter.OPERATOR_ROLE(), admin));
 
-        assertEq(
-            counter.getRoleAdmin(counter.OPERATOR_ROLE()),
-            counter.OPERATOR_ADMIN_ROLE()
-        );
+        assertEq(counter.getRoleAdmin(counter.OPERATOR_ROLE()), counter.OPERATOR_ADMIN_ROLE());
     }
 
     function test_OperatorAdminCanAddOperator() public {
@@ -49,9 +46,7 @@ contract RoleCounterV2Test is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                operator,
-                counter.OPERATOR_ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, operator, counter.OPERATOR_ADMIN_ROLE()
             )
         );
 
