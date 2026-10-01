@@ -18,17 +18,11 @@ contract RoleCounterTest is Test {
     }
 
     function test_InitialRoles() public view {
-        assertTrue(
-            counter.hasRole(counter.DEFAULT_ADMIN_ROLE(), admin)
-        );
+        assertTrue(counter.hasRole(counter.DEFAULT_ADMIN_ROLE(), admin));
 
-        assertTrue(
-            counter.hasRole(counter.OPERATOR_ROLE(), admin)
-        );
+        assertTrue(counter.hasRole(counter.OPERATOR_ROLE(), admin));
 
-        assertFalse(
-            counter.hasRole(counter.OPERATOR_ROLE(), operator)
-        );
+        assertFalse(counter.hasRole(counter.OPERATOR_ROLE(), operator));
     }
 
     function test_OperatorCanIncrement() public {
@@ -62,34 +56,32 @@ contract RoleCounterTest is Test {
         assertFalse(counter.isOperator(operator));
     }
 
-    function test_NonOperatorCannotIncrementWithExactError()
-    public
-{
-    vm.expectRevert(
-        abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector,
-            stranger,
-            counter.OPERATOR_ROLE()
-        )
-    );
+    function test_NonOperatorCannotIncrementWithExactError() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                stranger,
+                counter.OPERATOR_ROLE()
+            )
+        );
 
-    vm.prank(stranger);
-    counter.increment();
-}
+        vm.prank(stranger);
+        counter.increment();
+    }
 
-function test_OperatorCannotAddOperator() public {
-    vm.prank(admin);
-    counter.addOperator(operator);
+    function test_OperatorCannotAddOperator() public {
+        vm.prank(admin);
+        counter.addOperator(operator);
 
-    vm.expectRevert(
-        abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector,
-            operator,
-            counter.DEFAULT_ADMIN_ROLE()
-        )
-    );
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
+                operator,
+                counter.DEFAULT_ADMIN_ROLE()
+            )
+        );
 
-    vm.prank(operator);
-    counter.addOperator(stranger);
-}
+        vm.prank(operator);
+        counter.addOperator(stranger);
+    }
 }

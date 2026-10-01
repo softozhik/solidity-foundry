@@ -2,8 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {IAccessControl} from
-    "@openzeppelin/contracts/access/IAccessControl.sol";
+import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 import {RoleCounterV2} from "../src/RoleCounterV2.sol";
 
 contract RoleCounterV2Test is Test {
@@ -19,42 +18,20 @@ contract RoleCounterV2Test is Test {
         counter = new RoleCounterV2();
     }
 
-    function test_InitialRolesAndRoleAdmin()
-        public
-        view
-    {
-        assertTrue(
-            counter.hasRole(
-                counter.DEFAULT_ADMIN_ROLE(),
-                admin
-            )
-        );
+    function test_InitialRolesAndRoleAdmin() public view {
+        assertTrue(counter.hasRole(counter.DEFAULT_ADMIN_ROLE(), admin));
 
-        assertTrue(
-            counter.hasRole(
-                counter.OPERATOR_ADMIN_ROLE(),
-                admin
-            )
-        );
+        assertTrue(counter.hasRole(counter.OPERATOR_ADMIN_ROLE(), admin));
 
-        assertTrue(
-            counter.hasRole(
-                counter.OPERATOR_ROLE(),
-                admin
-            )
-        );
+        assertTrue(counter.hasRole(counter.OPERATOR_ROLE(), admin));
 
         assertEq(
-            counter.getRoleAdmin(
-                counter.OPERATOR_ROLE()
-            ),
+            counter.getRoleAdmin(counter.OPERATOR_ROLE()),
             counter.OPERATOR_ADMIN_ROLE()
         );
     }
 
-    function test_OperatorAdminCanAddOperator()
-        public
-    {
+    function test_OperatorAdminCanAddOperator() public {
         vm.prank(admin);
         counter.addOperator(operator);
 
@@ -66,17 +43,13 @@ contract RoleCounterV2Test is Test {
         assertEq(counter.count(), 1);
     }
 
-    function test_OperatorCannotAddOperator()
-        public
-    {
+    function test_OperatorCannotAddOperator() public {
         vm.prank(admin);
         counter.addOperator(operator);
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl
-                    .AccessControlUnauthorizedAccount
-                    .selector,
+                IAccessControl.AccessControlUnauthorizedAccount.selector,
                 operator,
                 counter.OPERATOR_ADMIN_ROLE()
             )
@@ -86,9 +59,7 @@ contract RoleCounterV2Test is Test {
         counter.addOperator(stranger);
     }
 
-    function test_OperatorAdminCanRemoveOperator()
-        public
-    {
+    function test_OperatorAdminCanRemoveOperator() public {
         vm.prank(admin);
         counter.addOperator(operator);
 

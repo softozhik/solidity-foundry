@@ -4,8 +4,7 @@ pragma solidity ^0.8.20;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract RoleCounter is AccessControl {
-    bytes32 public constant OPERATOR_ROLE =
-        keccak256("OPERATOR_ROLE");
+    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
     uint256 public count;
 
@@ -18,25 +17,19 @@ contract RoleCounter is AccessControl {
         count += 1;
     }
 
-    function addOperator(address account)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addOperator(
+        address account
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _grantRole(OPERATOR_ROLE, account);
     }
 
-    function removeOperator(address account)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function removeOperator(
+        address account
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _revokeRole(OPERATOR_ROLE, account);
     }
 
-    function isOperator(address account)
-        external
-        view
-        returns (bool)
-    {
+    function isOperator(address account) external view returns (bool) {
         return hasRole(OPERATOR_ROLE, account);
     }
 }
