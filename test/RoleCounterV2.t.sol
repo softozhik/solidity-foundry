@@ -65,4 +65,23 @@ contract RoleCounterV2Test is Test {
 
         assertFalse(counter.isOperator(operator));
     }
+
+    function test_DefaultAdminCanGrantOperatorAdmin() public {
+        bytes32 operatorAdminRole = counter.OPERATOR_ADMIN_ROLE();
+
+        vm.prank(admin);
+        counter.grantRole(operatorAdminRole, operatorAdmin);
+
+        assertTrue(counter.hasRole(operatorAdminRole, operatorAdmin));
+
+        vm.prank(operatorAdmin);
+        counter.addOperator(operator);
+
+        assertTrue(counter.isOperator(operator));
+
+        vm.prank(operator);
+        counter.increment();
+
+        assertEq(counter.count(), 1);
+    }
 }
