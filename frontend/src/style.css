@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  padding: 40px 20px;
+  font-family: system-ui, sans-serif;
+  background: #f4f6fa;
+  color: #182230;
+}
+
+#app {
+  max-width: 700px;
+  margin: auto;
+  padding: 28px;
+  background: white;
+  border-radius: 16px;
+  overflow-wrap: anywhere;
+}
+
+button {
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
