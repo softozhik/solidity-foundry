@@ -3,8 +3,9 @@ pragma solidity ^0.8.20;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract TokenVault {
+contract TokenVault is ReentrancyGuard {
     IERC20 public immutable token;
     using SafeERC20 for IERC20;
 
@@ -20,14 +21,14 @@ contract TokenVault {
         token = IERC20(tokenAddress);
     }
 
-    function deposit(uint256 amount) external {
+    function deposit(uint256 amount) external nonReentrant {
         if (amount == 0) revert ZeroAmount();
         deposits[msg.sender] += amount;
         token.safeTransferFrom(msg.sender, address(this), amount);
         emit Deposit(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) external {
+    function withdraw(uint256 amount) external nonReentrant {
         if (amount == 0) revert ZeroAmount();
         if (deposits[msg.sender] < amount) revert InsufficientDeposit(deposits[msg.sender], amount);
         deposits[msg.sender] -= amount;
