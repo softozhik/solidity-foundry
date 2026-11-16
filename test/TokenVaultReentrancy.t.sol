@@ -37,6 +37,20 @@ contract CallbackToken is ERC20 {
 
         return super.transfer(to, amount);
     }
+
+    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
+        if (armed) {
+            armed = false;
+            attempted = true;
+
+            (bool success, bytes memory result) = address(target).call(abi.encodeCall(TokenVault.deposit, (0)));
+
+            reentrySucceeded = success;
+            reentryResult = result;
+        }
+
+        return super.transferFrom(from, to, amount);
+    }
 }
 
 contract TokenVaultReentrancyTest is Test {
@@ -63,5 +77,29 @@ contract TokenVaultReentrancyTest is Test {
         assertEq(vault.deposits(address(this)), 3 ether);
         assertEq(token.balanceOf(address(vault)), 3 ether);
         assertEq(token.balanceOf(address(this)), 17 ether);
+    }
+
+    function testDepositBlocksReentry() public {
+        CallbackToken token = new CallbackToken();
+        TokenVault vault = new TokenVault(address(token));
+
+        token.approve(address(vault), 10 ether);
+        vault.deposit(5 ether);
+
+        // Включаем обратный вызов только перед депозитом.
+        token.arm(vault);
+
+        vault.deposit(5 ether);
+
+        // Попытка действительно была и завершилась отказом.
+        assertTrue(token.attempted());
+        assertFalse(token.reentrySucceeded());
+        assertEq(token.reentryResult(), abi.encodeWithSelector(ReentrancyGuard.ReentrancyGuardReentrantCall.selector));
+
+        // Основной депозит успешно завершился.
+        assertEq(vault.deposits(address(this)), 10 ether);
+        assertEq(token.balanceOf(address(vault)), 10 ether);
+        assertEq(token.balanceOf(address(this)), 10 ether);
+        assertEq(token.allowance(address(this), address(vault)), 0);
     }
 }
